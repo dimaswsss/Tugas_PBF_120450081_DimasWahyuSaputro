@@ -6,6 +6,6 @@
 
 import spetools_120450081
 
-password = input("Masukkan password (maksimal 100 karakter): ")
-password_final = spetools_120450081.enc(password)
-print('hasil encrypt: ', password_final)
+password = input("Masukkan password hasil enkripsi: ")
+decrypt_final = spetools_120450081.dec(password)
+print('hasil decrypt: ', decrypt_final)

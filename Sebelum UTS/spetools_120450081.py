@@ -4,19 +4,8 @@
 # Date : 04 March 2022
 # Program Description : Program to solve simple encryption password problem
 
-# belum final
-
-def check_password(password):
-    if len(password) > 100:
-        return "Password terlalu panjang, masukkan password yang lebih pendek"
-    else:
-        return password
-
-def convert_string_to_list(password):
+def enc(password):
     password_list = list(password)
-    return password_list
-
-def encrypt(password_list):
     temp_password = []
     for i in range(len(password_list)):
         temp_password.append(chr(((ord(password_list[i]))//26) + 80))
@@ -27,3 +16,16 @@ def encrypt(password_list):
             temp_password.append('+')
     password_final = ''.join(temp_password)
     return password_final    
+
+def dec(password):
+    # convert string to list
+    password_list = list(password)
+    splitpass = [password_list[i:i+3] for i in range(0, len(password_list), 3)]
+    temp_password = []
+    for word in splitpass:
+        a = ord(word[0]) - 80
+        b = ord(word[1]) - 80
+        desc = a * 26 + b
+        temp_password.append(chr(desc))
+    decrypt_final = ''.join(temp_password)
+    return decrypt_final
