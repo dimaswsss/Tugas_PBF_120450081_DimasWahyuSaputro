@@ -7,3 +7,5 @@ bilangan_pertama = bilangan_pertama.read()
 bilangan_kedua = bilangan_kedua.read()
 
 add = (lambda bilangan_pertama, bilangan_kedua: bilangan_pertama + bilangan_kedua)(bilangan_pertama, bilangan_kedua)
+
+# the big number addition

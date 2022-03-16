@@ -19,12 +19,12 @@ print(password_list3)
 # value 1
 temp_password1 = []
 for i in range(len(password_list1)):
-    temp_password1.append(chr(round((ord(password_list1[i]))/26) + 80))
+    temp_password1.append(chr(((ord(password_list1[i]))//26) + 80))
 
 # value 2
 temp_password2 = []
 for i in range(len(password_list2)):
-    temp_password2.append(chr(round((ord(password_list2[i]))%26) + 80))
+    temp_password2.append(chr((ord(password_list2[i]))%26 + 80))
 
 # value 3
 temp_password3 = []
@@ -37,3 +37,17 @@ for i in range(len(password_list3)):
 print(temp_password1)
 print(temp_password2)
 print(temp_password3)
+
+# merge value 1, 2, 3
+temp_password_final = []
+for i in range(len(password_list)):
+    if i%3 == 0:
+        temp_password_final.append(temp_password1[i//3])
+    elif i%3 == 1:
+        temp_password_final.append(temp_password2[i//3])
+    else:
+        temp_password_final.append(temp_password3[i//3])
+
+# convert list to string
+password_final = ''.join(temp_password_final)
+print(password_final)

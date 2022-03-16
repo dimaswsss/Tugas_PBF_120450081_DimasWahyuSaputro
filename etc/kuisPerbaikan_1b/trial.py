@@ -1,3 +1,14 @@
+# encryption
+def __init__(self, password):
+    self.password = password
+    self.checkLen = checkLen(password)
+
+def checkLen(password):
+    if len(password) > 100 or len(password) <= 0:
+        return 'Terlalu banyak karakter'
+    else:
+        return True
+
 def mapped():
     string_original = 'abcdefghijklmnopqrstuvwxyz'
     string_list = list(string_original)
