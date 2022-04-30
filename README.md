@@ -4,6 +4,6 @@ Halo, saya Dimas Wahyu Saputro, 120450081. Selamat datang!
 
 
 
-> I'm not responsible for this code. They make me write it, againts my will.
+> I'm not responsible for this code. They made me write it, against my will.
 > 
 > Bercanda.
