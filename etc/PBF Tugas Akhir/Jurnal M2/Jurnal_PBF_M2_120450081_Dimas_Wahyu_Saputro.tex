@@ -1,0 +1,970 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Jurnal\_PBF\_M2\_120450081\_Dimas\_Wahyu\_Saputro}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{tugas-pendahuluan---pbf---modul-2}{%
+\section{Tugas Pendahuluan - PBF - Modul
+2}\label{tugas-pendahuluan---pbf---modul-2}}
+
+\textbf{Dimas Wahyu Saputro 120450081}
+
+    \hypertarget{soal}{%
+\subsection{Soal}\label{soal}}
+
+Kerjakan seluruh soal berikut dengan menggunakan higher order function
+map,filter dan reduce!
+
+    \hypertarget{section}{%
+\subsection{1}\label{section}}
+
+Buatlah sebuah fungsi bernama ulangi\_NIM, ulangi memiliki input sebuah
+bilangan skalar a, dan mengeluarkan vektor 1xn dengan seluruh elemen nya
+adalah a !
+
+    Referensi:
+\href{https://www.planetofbits.com/python/how-to-create-a-vector-in-python-using-numpy/}{Matrix}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{l+s+sd}{Karena ingin mencetak bilangan skalar a, sebanyak n, digunakan map().}
+\PY{l+s+sd}{map() mempunyai struktur map(function, iterable(s))}
+
+\PY{l+s+sd}{1. pada function, saya menggunakan lambda. x menjadi parameter, dan a menjadi ekspresi.}
+\PY{l+s+sd}{    akan selalu mengembalikan nilai a.}
+\PY{l+s+sd}{2. iterable, yaitu range(0,n). Artinya, akan membuat urutan angka dari 0 hingga n.}
+
+\PY{l+s+sd}{Ketika map(lambda x: a, range(0, n)), akan mengembalikan bilangan skalar a, sebanyak n.}
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{ulangi\PYZus{}081}\PY{p}{(}\PY{n}{a}\PY{p}{,} \PY{n}{n}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{map}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{a}\PY{p}{,} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{n}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} saya disini ingin mencetak vektor 1xn, dengan bilangan = 10, dan n = 4 \PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{n}{ulangi\PYZus{}081}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[10, 10, 10, 10]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{section}{%
+\subsection{2}\label{section}}
+
+Buatlah deret bilangan sebagai berikut dengan input n sebagai panjang
+deret:
+
+\[ 
+\frac{1}{2},  \frac{-1}{4}, ⃛, (-1)^n\frac{1}{2}
+\]
+
+    Referensi:
+\href{https://www.ruangguru.com/blog/barisan-dan-deret-geometri}{Deret -
+RuangGuru}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{functools}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} Membuat fungsi untuk menghitung nilai deret ke\PYZhy{}n \PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{calc\PYZus{}seq}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n+nb}{pow}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{n} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{*} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{n+nb}{pow}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{n}\PY{p}{)}\PY{p}{)}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{l+s+sd}{Membuat fungsi untuk mencetak deret dari deret ke\PYZhy{}1 sampai ke\PYZhy{}n}
+\PY{l+s+sd}{Langkah awal, menggunakan map(). map() mempunyai struktur: map(function, iterable(s))}
+
+\PY{l+s+sd}{1. pada function, saya menggunakan lambda. x menjadi parameter, dan calc\PYZus{}seq(x) menjadi ekspresi. }
+\PY{l+s+sd}{    Artinya, dari setiap nilai iterable nanti, akan mereturn nilai calc\PYZus{}seq(x).}
+\PY{l+s+sd}{2. iterable, yaitu range(1, n+1). Artinya, akan membuat urutan angka dari 1 hingga n+1.}
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{gen\PYZus{}seq}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{map}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{calc\PYZus{}seq}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{,} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{gen\PYZus{}seq}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[0.5, -0.25, 0.125, -0.0625]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{section}{%
+\subsection{3}\label{section}}
+
+Jumlahkan deret bilangan tersebut!
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{functools}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{l+s+sd}{Untuk menjumlahkan dari deret yang sudah ada, dibutuhkan reduce() function.}
+\PY{l+s+sd}{fungsi reduce() menghasilkan suatu nilai kumulatif dari operasi fungsi masukan terhadap nilai pada iterable masukan.}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{sum\PYZus{}seq}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{:}
+    \PY{n}{seq} \PY{o}{=} \PY{n}{gen\PYZus{}seq}\PY{p}{(}\PY{n}{n}\PY{p}{)}
+    \PY{k}{return} \PY{n}{functools}\PY{o}{.}\PY{n}{reduce}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{:} \PY{n}{x}\PY{o}{+}\PY{n}{y}\PY{p}{,} \PY{n}{seq}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+
+\PY{n}{sum\PYZus{}seq}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0.3125
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{section}{%
+\subsection{4}\label{section}}
+
+Sebuah DNA dimodelkan dalam sebuah string menjadi sequence TCGA dan
+disimpan ke dalam. Hitunglah kemunculan pola!
+
+    Referensi:
+\href{https://www.geeksforgeeks.org/count-the-number-of-times-a-letter-appears-in-a-text-file-in-python/}{Count
+the number of times a letter}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} Membuka file .txt \PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{n}{filename} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{DNA.txt}\PY{l+s+s1}{\PYZsq{}}
+\PY{n}{dat} \PY{o}{=} \PY{n+nb}{open}\PY{p}{(}\PY{n}{filename}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{read}\PY{p}{(}\PY{p}{)}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} Ketika file .txt dibuka, diakhir akan terdapat string \PYZbs{}n. Hal ini harus kita cegah, karena kita hanya ingin string DNA \PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{n}{dat} \PY{o}{=} \PY{n}{dat}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+\PY{c+c1}{\PYZsh{}dat}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'TGTCTTCCGGCTGAGCGGTTCCTAACCAGCAGACTGATACTGGTCGAATATCGACGGGCAAGAGCCCTGGGATTGATGC
+GTTTCACCATGCGCGTCTCAGTGCAGGCAGGAATGCAGAGCTTACTTCAAACTAGTTACTGGCAAAAAATACAAATTTTT
+TCGATCGACCTTGAGTTTATTCATTACCGCACAGTCTTTTACCGCACCTGTTACCGCACATCCGTAAGTTTACCGCACGT
+TACCGCACTACCTCTCTATATTACCGCACTTCGTTTACCGCACGCTGAGGAACGGTTACCGCACTTACCGCACCACAAGG
+TGCGTGCTCTGTTATTACCGCACCACCATTACCGCACGCACTTTTATTACCGCACCAGGGCACAGCCACGTAGGGTAGCG
+TCGTTCTCACTGTATTGCGGCGACGGTCGTAATTTACCGCATTACCGCACCACTCGTTAGCTTACCGCACCTAGGGTTGT
+TACCGCACGACTTACCGCACAGCCGTTACCGCACGTGTTACTTGACGCTCTAACTCCCACTCATATCAGTCTTATTACCG
+CACACTGGGCTTACCGCACCCGCACCTTAAGTAGGCAGTTACCGCACGTATTACCGCACGTAATTACCGCACACCTGTAA
+AGGCAGGGTAAAGTACAGACTTACCGCTTACCGCACGGTTGCACCACGACAAATCTAACGTTAGGTACGTTACCGCACGG
+GAAATTACCGCACTCCAGGGTTTTACCGCACAGATATCCATTCGGGAATGTGACCCCTGGAGTGGAGTTGTGCGAAAGAT
+ACGGAGTTTTCAAGGGCACACCCAGCTATGTTATTAAGCGTTACAGTGGCCGCTGCATCATGTCAATGTTCAGGTCATTC
+TCTATCTTGCTATGTACGAACCCTCGTTAAGAGGGAGTAAGCGATCTTTTGACAAAATCGTATGCATGTAGGCGAGGCAA
+TGCCGATTACATTGAACGGCGGGACTTTTCGTATGAGACACCGCGGTTGAAATATTTTTTTATGCAAGAGCGGGATTGGG
+CGGAAGGAGACTTAACGCAGTGCCTAGCACTGTTAACTGCGGCATGGCCGGATGGACTACCTATTTTGCAGCTCCAGCGT
+TTGAGTTCCACGTACTGACGGAACAGTCCCGAGATAGGCCATGTGGTCGATCCCAGTGAGAAATGAGACTCGAGATGCCG
+GTACCGGTAGCATCACCACATTGCTCCAGTATGATATCAGTCTTCACTGTCAGCAATTAATGCAGCGATCTTGAAGAGAG
+TTATTCATCTCTTATCACCTGACAATAAATCAATTTACCAGTCAAATTCTCTTTAACATCGTGCCGAACTGCGATGCGTC
+GTAGTCTAGATTAGGATATATTTTCTTAGCTGGCTTCGATGATTGGCTGTACGCTAAGGTGATTGAATTTCGATCTGCAT
+TGGAGCTGTACCCCACCTTGCATGGCATTGACAGCCTAAAGCGTGAAGAATGCAATACAGCTGACAGAAAAATAACGGGC
+TCGATAACGTTCCAAGATTCTGACTTAACGACGGCTAGCGAGCGAGTCATAAATCCCGTCCACACCGGGCAATCGGGTCG
+GAGTGGAAAGGGCGGGATTTTATTATTACGTGACGCAGATCTCCGTGTCACTATACTCACATCCTCTCTGTAGATAAAGT
+TATACCAACCTCCATATTCTTCTTACGCTAAGTTCGGGCTATCCGAGTCTCGGCCCATAGCAGGAGCACTTTAAGGGAAG
+TCCTATTGCCGAATACAGTACGTTCCCCGCAATATGTTATACTCACCCAAATATGTTAATATGTTATATGTTAAAACGCA
+GTGTGGGAATATGTTAATATGTTATGTGAATATGTTAAAATATGTTAAAATATGTTAACGATGTTAGCCGTGATAAATAT
+GTTATTAACGGCGTGCGTTAATATGTTAGCGACGACTGGGGGTCAATATGTTAGCCAACTTCCTCAATATGTTAACCGGT
+TAATATGTTAGTTAAGATCAATAAATATGTTAGCTACGTAGACAATAAAAGCATAAGCAATATGTTATAATATGTTAGAC
+AGTTCTCTAACCGATAATATGTTAAGGCATACTTAACCAGCGAATGACAGAAATATGTTAATATGTTAAATAAATATGTT
+AGATAATATGTTACGATATTACCCGCACATTGCTCCGAATATGAATATGTTAAGGTGGTTCTCCGTATTTAATATTGTGA
+GAGATAGCTTGTGAGAGATGTTGTTGTGAGAGAGCTGTGAGAGCTTTGCGAGCCTTTAAATATTGTGAGAGTTATGTAGT
+CGGCCTGTGAGAGATGTGTGAGAGAGTTAAATATGTTAGTTAGCTGAGAGCTACGCTGTGAGAGGCGAATTGACGTAGTG
+CTTTTTGTTCTGTGAGAGATGTGTGAGAGTGTGAGAGCGCGTGTGAGTGTGAGAGTGATTGTGCATGGTCCAGTAAGATG
+TGAGAGTGTGAGAGTGATCTAACGCTATGTGTGAGAGAGGGTGTGAGAGGCTGCGTATGAAGCACAAATGTGAGAGTTGT
+GAGAGATACGTTAAGAGCCCGGAAGCTCGGCATCATAAGCTGAGCAGATTCAATGTGAGAGGGCGAGCCGACGGTAGGCT
+GTGAGAGTCATTATTGTGAGAGTCGCGTGGTGTGAGAGTCCCATTTTATGTGAGATGTGAGAGCTCTGGGGCTGTGATGT
+GAGAGAGTACGCCGAAGCGTGTGAGAGTCCTGTGAGAGATTCGGAGGTCTGGATGACATTGTGAGAGCCTGCTTACGCGA
+CGTGATGAACGCGACCGACTAGCGACCGCCCACTACTACTCGCAGTTGGTCTAGAGGCATTGCTTTACTGAAATACGCAG
+GATGCTTATGACGCTCGCGCCAATACATCGCGCTCGCACTGTATGTCGCTTCACCTTAATCCTAAAGCTCAAATATAACG
+GAAAAAGAGAAATTAGGACGACCGAGGGTCGTCCTCCGGTGGTTTTCACGACTTCGCCAATGGCGTGCTGCGTCGAAATG
+TGCTCAAAGCCCCGTAAAGCTCAGACACCATGCAGGAATGGGAATGTGTACCCAGAGATCCCTAGTAAGAGAGATCCAAG
+ACTTAAAGCCGTTCCGAGAGAGATCTAATCACTAGAGATCTTAACACCAATAGAGATCCTCTAAGAGATCAGTAGAGATC
+GCTTTTCAGAGATAGAGATCACTCACCGAGAGATCTTACAGTTTGATATGTCAGTTCGGTTAAAAGCAGAGATCGTCTGC
+AGAGATCGGTAGCGTAGAGATCCCGTGTCGTACAAAAACTTAGAGATCAGATCGCGCCTCGAACTGTACTTAGAGATCTA
+CATTATCTAAGAGAGAGATCAGAGATCACAAGGCCACACACGACAAAGTTAGAGATCTACACACGATAGGTGGTGCCGAA
+CCTGAGAGATCCGGGTTTTGAGAGAGATCAAGAGATAGAGATCGTTAGAGAAGAGATCTAGAGATCGCACGGGTTTTGGA
+GAGATCGTTCGGGTTTTGTCGGGAAGAGATTAATGCGGTGAGTTAATGCGGGTATAATGCGGCAGATAATGTAATGCGGT
+CTAATGTAATGCGGGAGATAATGCGGTGATGAAACTTAATGCGGCTAATGCGGTTAATGCGGTCGAACGCTAATGCGGAG
+CTAATGCGGGCGTAACATAATGTAATGCGGTTGTCAATATTGTTTTCAATATTAATATTCAATTACAATATTCAAACGCA
+ATATTAAACGGCCGGTAATGCGGGGTCAATCAATATTTTCGTAATGCGGGGTTAATGCGGTTTTCAATATTATCGGTAAT
+GCGGGAGCTGGCAATATTGGTTTTGGTAATGCGGTTTAATAATGCGGGGCGACAATATTGGGTAATGCGGATATTTATCA
+ATATTGTGTTTCAATATTTAACACAATATTTGCCGTAGGTATGACCTAATTAATGCGGATATTAGGGGCCAATTAATGCG
+GATCGTAATGCGGGTCGGGCTTATAACAATTAATGCGGTCAATATTACTAATGCTAATGCGGCGGACTACAATATTTACA
+AAAGACTACCAATAATGCGGATAATGCGGTCAATAATGCGGAAGATAACGCGGCAATATTGCCCGACAATATTTGACTAC
+ACAAGACTACACAATATTCCGTTATTCTGTGCCAACGCCAGGTCAATGCGTCGAACCAATATTCTTGATTGTGATGCAGA
+CTACACGACTACAATATTTACCCCCGGGACTACATATCCACGACTACAGGGCGAGACTACATAGGGACTACAGACTACAA
+CAATTATGGTCACATTAACTCTGCCCGGCGGCTCTTCCCTAAATCTCACGTGATGGACTAGACTACACCGACTACAACAT
+ACTTTGCAACGACTACAGTACGTTAAGACTACAGGATTCAGACTACACTTGATTTCCTGACTACACTTCTGACAACCCGC
+ACATTGCCCGCTAACTCTGATGGCCCCCAGAGACTACATACCATCGAGCGCGACTACAGGACTACAGCCGTAGACCCTTT
+AGACTACACGCCAGGGCCAACTGACACGGATAAGGTCTTTGCCCCGCAAGTGCTCGCCGAATGTGATTAATCTCAACATT
+CCGACCTGCAAGAGCACACGCATTTGATATGGGTATAAGGAAGATCTCGTCCAGCTATAATGTACAACATTTCCCCGTCA
+TGACTTGCTACATAAACAGAATAAGACGTGACGTCGCCAATATAAGACGTACTCGATTGACCGTAAAATTTTTCTAAGAA
+CCAAAATAAGACGTAAGACGTTCACTTAAATAAGACGTAGGGCGTTACCGATAAGACGTTAAGACGTGGATCGCCATCGC
+CCGTGAGTCGCTCTCCCGCATAAGACGTTAAGACGTCCCAATAGTGCTCCCTACACTTTACCGGTGGTAGATAAGACGTA
+GACGTTATAAGACGTCGGGTAAATATAAGACGTTATTCCCAATAAATAAGACGTAATCCCTGTAACACTGGAAGTGATAA
+GACGTTTGTTCTAACATAAGACGTTGTAACTGCCCTAACCCTGATAAGACGTTTTAAAAAGTACTATAAGACGTTCGAGG
+AATGAGACCATAAGACGTCGTCCCTCCCTCAGCACTGAATTTTTTCGAAGATAAGACGTAAGACGTGTTGGTTTATCGTT
+AGAAATAAGACGTACGTTTATAAGACGTAATGGTCATAAGACGTACGTTAAGACGTAATAAGACGTTATCCATCCCAAAA
+TTACACGTCAGAAATCATGGCAACCGCCGTGATGGAAGAGAGTAGCAACCGACTACATACAGTATACTGTGGGCAGACTC
+GTTTGTACACCAACACTTCCGCCGCCATTATTAAATACGATTGGTGCTTTACGCATCTTGATGACCATGGTTACTCACCT
+CGGGTGCTGACCCGCCTGTCTCCTATGACGTCGGGCTCCACTACGGCCCCGTTTCGACAGATAGGGGGGAGTTGACCTCG
+AATGCGGGTTACTTCGCCTGCCTTTCGACGAATCGGTATGGCTAGCTTGGACAAGTATAGGATTGGTCTTTCAAGCTGCA
+CTGTTTTGCAGCTTCTAGCGAGATAAGGCTGAAGCCTCCAGCGATATTGTCCAGTTGGAAAAAAGTTGGAAAAATGGGGG
+TTTGGAAAAAAGAAAACGCCCGGGTTACACCGGGGACATAATTGGAAAAAACCAGTTGGAAAAAGCTTAGAAAGCTTGGA
+AAAAGTCTTGGGAACAATTATTGGAAAAACGATGGGCGACTGAGAGTTGGAAAAAAAAATTGGAAAAATTGGAAAAACGT
+GGCTTTGGAAAAATGGAAAAAGATTGGAAAAATTGGAAAAACTTTTGGAATTGGAAAAAAAAGCCACTGCGGGTGCTTTG
+GAAAAAATATTTGGAAAAAACTAGCAAAGCGGCATTCTGAGAGATTGGAAAAACGTGCTAAGCTTCTTTGGAAAAAGAAT
+TGGAAAAAAAAAAGCGCACCACTCAGGAAGACATGTCTGGCACTTTAGCGTTAAAGTTTGGAAAAAACTCCTCCCACATT
+TGGAAAAATGGAAAAAGAATCGGTTAGAGCGGCACGTGTCATATTGGAAAAATACTCAGCGCGTTAGCAGTTGGAAAAAA
+ATGATGACTATGTTTGGAAGACAAGGAGAAAGTCTCCGAACAACATCCATGACAAGGAGGAGGCTGGACAAGGATTCAGG
+CTGTTCAGACAAGGAGGGACGACAAGGAAGGACTGTTCAGGCTGGACAAGACAAGGACTGTTGACAAGGACAGGACAAGG
+ACGAAAGGCTGTTCAGGGACAAGGAAGGACAGGCTGTTCAGAGGACGAGGACGACAAGGAAGGCTGTTCAGGCTGTTCAG
+GAGGACGAGGAAGGATGTTCGACAAGAGGACGACAGGCTAGGACGACGAAGAGGACGACTGTTCAGGCTGTAGGACGAGG
+ACGAAAGGATGTTGACAAGGAGGAGAGGAGGACGAGGAAGGACGAAAGGAGACAAGGAGACAAGGAGACAAGGAAGGACG
+AAGGACGAAGGACGAAGGACGAAGGACGAAGGACGAAGGACAGAGGACAGGACGACGAAGGACGAAGGACGAAGGACAGG
+ACGAAGGACGAAGGACGAAGGACGACAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCA
+TCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCA
+ATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATC
+ATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCATCAATCAT'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{functools} \PY{k}{as} \PY{n+nn}{ft}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{l+s+sd}{Karena harus dimodularkan, fungsi append\PYZus{}n berfungsi untuk mendapatkan string terpecah dari data, mirip seperti split().}
+\PY{l+s+sd}{Pada fungsi append\PYZus{}n digunakan reduce, supaya mengembalikan satu nilai.}
+\PY{l+s+sd}{Misalkan append\PYZus{}n(dat, 0, 3), maka akan mengembalikan nilai \PYZsq{}TGT\PYZsq{}}
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{append\PYZus{}n}\PY{p}{(}\PY{n}{dat}\PY{p}{,} \PY{n}{i}\PY{p}{,} \PY{n}{n}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{ft}\PY{o}{.}\PY{n}{reduce}\PY{p}{(} \PY{k}{lambda} \PY{n}{a}\PY{p}{,}\PY{n}{b}\PY{p}{:}\PY{n}{a}\PY{o}{+}\PY{n}{b} \PY{p}{,} \PY{n}{dat}\PY{p}{[}\PY{n}{i}\PY{p}{:}\PY{n}{i}\PY{o}{+}\PY{n}{n}\PY{p}{]} \PY{p}{)}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{l+s+sd}{fungsi remap() berguna untuk membuat list yang berisi string terpecah dari data. }
+\PY{l+s+sd}{Digunakan map, dengan fungsi lambda yang akan memproses setiap item dari iterable,}
+\PY{l+s+sd}{dengan iterable range(len(dat) \PYZhy{} len(seq)), artinya panjang data \PYZhy{} panjang seq.}
+
+\PY{l+s+sd}{Misalkan list(remap(dat, \PYZsq{}ACT\PYZsq{})), akan mengembalikan [\PYZsq{}TGT\PYZsq{}, \PYZsq{}GTC\PYZsq{}, \PYZsq{}TCT\PYZsq{}, .... ]}
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{remap}\PY{p}{(}\PY{n}{dat}\PY{p}{,} \PY{n}{seq}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n+nb}{map}\PY{p}{(} \PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{append\PYZus{}n}\PY{p}{(}\PY{n}{dat}\PY{p}{,}\PY{n}{x}\PY{p}{,}\PY{n+nb}{len}\PY{p}{(}\PY{n}{seq}\PY{p}{)}\PY{p}{)} \PY{p}{,} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{dat}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n+nb}{len}\PY{p}{(}\PY{n}{seq}\PY{p}{)} \PY{o}{+} \PY{l+m+mi}{1} \PY{p}{)} \PY{p}{)}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{l+s+sd}{Setelah didapatkan list, dibuat fungsi count\PYZus{}mer() untuk menghitung berapa kali seq tertentu muncul. }
+\PY{l+s+sd}{digunakan reduce() akan menghasilkan suatu nilai kumulatif dari operasi fungsi masukan.}
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{count\PYZus{}mer}\PY{p}{(}\PY{n}{dat}\PY{p}{,} \PY{n}{seq}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{ft}\PY{o}{.}\PY{n}{reduce}\PY{p}{(} \PY{k}{lambda} \PY{n}{a}\PY{p}{,} \PY{n}{b}\PY{p}{:} \PY{n}{a} \PY{o}{+} \PY{p}{(}\PY{l+m+mi}{1} \PY{k}{if} \PY{n}{b} \PY{o}{==} \PY{n}{seq} \PY{k}{else} \PY{l+m+mi}{0}\PY{p}{)} \PY{p}{,} \PY{n}{remap}\PY{p}{(}\PY{n}{dat}\PY{p}{,} \PY{n}{seq}\PY{p}{)} \PY{p}{,} \PY{l+m+mi}{0} \PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{append\PYZus{}n}\PY{p}{(}\PY{n}{dat}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'GTCT'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sequences} \PY{o}{=} \PY{p}{[} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{A}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GGT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AAGC}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AGCTA}\PY{l+s+s1}{\PYZsq{}} \PY{p}{]}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} fungsi untuk menghitung kemunculan sequences, menggunakan fungsi yang sudah dicoba di atas \PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{count\PYZus{}all}\PY{p}{(}\PY{n}{dat}\PY{p}{,} \PY{n}{sequences}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n+nb}{map} \PY{p}{(} \PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{count\PYZus{}mer}\PY{p}{(}\PY{n}{dat}\PY{p}{,}\PY{n}{x}\PY{p}{)}\PY{p}{,} \PY{n}{sequences} \PY{p}{)}
+
+\PY{n}{res} \PY{o}{=} \PY{n}{count\PYZus{}all}\PY{p}{(}\PY{n}{dat}\PY{p}{,} \PY{n}{sequences}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{o}{*}\PY{n}{res}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+2112 557 77 22 5
+    \end{Verbatim}
+
+    \hypertarget{section}{%
+\subsection{5}\label{section}}
+
+Reverse complement dari suatu sequence string DNA memiliki aturan
+sebagai berikut:
+
+A adalah komplemen dari T
+
+C adalah komplemen dari G
+
+Contoh reverse complement:
+
+input DNA : ACTGA
+
+Reverse complmenet : TGACT
+
+Buatlah fungsi untuk mencari inverse komplemen dari data pada nomor 4 !
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} Metode get() mengembalikan nilai item dengan kunci yang ditentukan. \PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{komplemen}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{A}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{T}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{T}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{A}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{C}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{G}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{G}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{C}\PY{l+s+s1}{\PYZsq{}} \PY{p}{\PYZcb{}}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} Mereverse komplemen data menggunakan map \PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{reverse\PYZus{}komplemen}\PY{p}{(}\PY{n}{dat}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n+nb}{map}\PY{p}{(} \PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{komplemen}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{,} \PY{n}{dat}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{res} \PY{o}{=} \PY{n}{reverse\PYZus{}komplemen}\PY{p}{(}\PY{n}{dat}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{o}{*}\PY{n}{res}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+A C A G A A G G C C G A C T C G C C A A G G A T T G G T C G T C T G A C T A T G
+A C C A G C T T A T A G C T G C C C G T T C T C G G G A C C C T A A C T A C G C
+A A A G T G G T A C G C G C A G A G T C A C G T C C G T C C T T A C G T C T C G
+A A T G A A G T T T G A T C A A T G A C C G T T T T T T A T G T T T A A A A A A
+G C T A G C T G G A A C T C A A A T A A G T A A T G G C G T G T C A G A A A A T
+G G C G T G G A C A A T G G C G T G T A G G C A T T C A A A T G G C G T G C A A
+T G G C G T G A T G G A G A G A T A T A A T G G C G T G A A G C A A A T G G C G
+T G C G A C T C C T T G C C A A T G G C G T G A A T G G C G T G G T G T T C C A
+C G C A C G A G A C A A T A A T G G C G T G G T G G T A A T G G C G T G C G T G
+A A A A T A A T G G C G T G G T C C C G T G T C G G T G C A T C C C A T C G C A
+G C A A G A G T G A C A T A A C G C C G C T G C C A G C A T T A A A T G G C G T
+A A T G G C G T G G T G A G C A A T C G A A T G G C G T G G A T C C C A A C A A
+T G G C G T G C T G A A T G G C G T G T C G G C A A T G G C G T G C A C A A T G
+A A C T G C G A G A T T G A G G G T G A G T A T A G T C A G A A T A A T G G C G
+T G T G A C C C G A A T G G C G T G G G C G T G G A A T T C A T C C G T C A A T
+G G C G T G C A T A A T G G C G T G C A T T A A T G G C G T G T G G A C A T T T
+C C G T C C C A T T T C A T G T C T G A A T G G C G A A T G G C G T G C C A A C
+G T G G T G C T G T T T A G A T T G C A A T C C A T G C A A T G G C G T G C C C
+T T T A A T G G C G T G A G G T C C C A A A A T G G C G T G T C T A T A G G T A
+A G C C C T T A C A C T G G G G A C C T C A C C T C A A C A C G C T T T C T A T
+G C C T C A A A A G T T C C C G T G T G G G T C G A T A C A A T A A T T C G C A
+A T G T C A C C G G C G A C G T A G T A C A G T T A C A A G T C C A G T A A G A
+G A T A G A A C G A T A C A T G C T T G G G A G C A A T T C T C C C T C A T T C
+G C T A G A A A A C T G T T T T A G C A T A C G T A C A T C C G C T C C G T T A
+C G G C T A A T G T A A C T T G C C G C C C T G A A A A G C A T A C T C T G T G
+G C G C C A A C T T T A T A A A A A A A T A C G T T C T C G C C C T A A C C C G
+C C T T C C T C T G A A T T G C G T C A C G G A T C G T G A C A A T T G A C G C
+C G T A C C G G C C T A C C T G A T G G A T A A A A C G T C G A G G T C G C A A
+A C T C A A G G T G C A T G A C T G C C T T G T C A G G G C T C T A T C C G G T
+A C A C C A G C T A G G G T C A C T C T T T A C T C T G A G C T C T A C G G C C
+A T G G C C A T C G T A G T G G T G T A A C G A G G T C A T A C T A T A G T C A
+G A A G T G A C A G T C G T T A A T T A C G T C G C T A G A A C T T C T C T C A
+A T A A G T A G A G A A T A G T G G A C T G T T A T T T A G T T A A A T G G T C
+A G T T T A A G A G A A A T T G T A G C A C G G C T T G A C G C T A C G C A G C
+A T C A G A T C T A A T C C T A T A T A A A A G A A T C G A C C G A A G C T A C
+T A A C C G A C A T G C G A T T C C A C T A A C T T A A A G C T A G A C G T A A
+C C T C G A C A T G G G G T G G A A C G T A C C G T A A C T G T C G G A T T T C
+G C A C T T C T T A C G T T A T G T C G A C T G T C T T T T T A T T G C C C G A
+G C T A T T G C A A G G T T C T A A G A C T G A A T T G C T G C C G A T C G C T
+C G C T C A G T A T T T A G G G C A G G T G T G G C C C G T T A G C C C A G C C
+T C A C C T T T C C C G C C C T A A A A T A A T A A T G C A C T G C G T C T A G
+A G G C A C A G T G A T A T G A G T G T A G G A G A G A C A T C T A T T T C A A
+T A T G G T T G G A G G T A T A A G A A G A A T G C G A T T C A A G C C C G A T
+A G G C T C A G A G C C G G G T A T C G T C C T C G T G A A A T T C C C T T C A
+G G A T A A C G G C T T A T G T C A T G C A A G G G G C G T T A T A C A A T A T
+G A G T G G G T T T A T A C A A T T A T A C A A T A T A C A A T T T T G C G T C
+A C A C C C T T A T A C A A T T A T A C A A T A C A C T T A T A C A A T T T T A
+T A C A A T T T T A T A C A A T T G C T A C A A T C G G C A C T A T T T A T A C
+A A T A A T T G C C G C A C G C A A T T A T A C A A T C G C T G C T G A C C C C
+C A G T T A T A C A A T C G G T T G A A G G A G T T A T A C A A T T G G C C A A
+T T A T A C A A T C A A T T C T A G T T A T T T A T A C A A T C G A T G C A T C
+T G T T A T T T T C G T A T T C G T T A T A C A A T A T T A T A C A A T C T G T
+C A A G A G A T T G G C T A T T A T A C A A T T C C G T A T G A A T T G G T C G
+C T T A C T G T C T T T A T A C A A T T A T A C A A T T T A T T T A T A C A A T
+C T A T T A T A C A A T G C T A T A A T G G G C G T G T A A C G A G G C T T A T
+A C T T A T A C A A T T C C A C C A A G A G G C A T A A A T T A T A A C A C T C
+T C T A T C G A A C A C T C T C T A C A A C A A C A C T C T C T C G A C A C T C
+T C G A A A C G C T C G G A A A T T T A T A A C A C T C T C A A T A C A T C A G
+C C G G A C A C T C T C T A C A C A C T C T C T C A A T T T A T A C A A T C A A
+T C G A C T C T C G A T G C G A C A C T C T C C G C T T A A C T G C A T C A C G
+A A A A A C A A G A C A C T C T C T A C A C A C T C T C A C A C T C T C G C G C
+A C A C T C A C A C T C T C A C T A A C A C G T A C C A G G T C A T T C T A C A
+C T C T C A C A C T C T C A C T A G A T T G C G A T A C A C A C T C T C T C C C
+A C A C T C T C C G A C G C A T A C T T C G T G T T T A C A C T C T C A A C A C
+T C T C T A T G C A A T T C T C G G G C C T T C G A G C C G T A G T A T T C G A
+C T C G T C T A A G T T A C A C T C T C C C G C T C G G C T G C C A T C C G A C
+A C T C T C A G T A A T A A C A C T C T C A G C G C A C C A C A C T C T C A G G
+G T A A A A T A C A C T C T A C A C T C T C G A G A C C C C G A C A C T A C A C
+T C T C T C A T G C G G C T T C G C A C A C T C T C A G G A C A C T C T C T A A
+G C C T C C A G A C C T A C T G T A A C A C T C T C G G A C G A A T G C G C T G
+C A C T A C T T G C G C T G G C T G A T C G C T G G C G G G T G A T G A T G A G
+C G T C A A C C A G A T C T C C G T A A C G A A A T G A C T T T A T G C G T C C
+T A C G A A T A C T G C G A G C G C G G T T A T G T A G C G C G A G C G T G A C
+A T A C A G C G A A G T G G A A T T A G G A T T T C G A G T T T A T A T T G C C
+T T T T T C T C T T T A A T C C T G C T G G C T C C C A G C A G G A G G C C A C
+C A A A A G T G C T G A A G C G G T T A C C G C A C G A C G C A G C T T T A C A
+C G A G T T T C G G G G C A T T T C G A G T C T G T G G T A C G T C C T T A C C
+C T T A C A C A T G G G T C T C T A G G G A T C A T T C T C T C T A G G T T C T
+G A A T T T C G G C A A G G C T C T C T C T A G A T T A G T G A T C T C T A G A
+A T T G T G G T T A T C T C T A G G A G A T T C T C T A G T C A T C T C T A G C
+G A A A A G T C T C T A T C T C T A G T G A G T G G C T C T C T A G A A T G T C
+A A A C T A T A C A G T C A A G C C A A T T T T C G T C T C T A G C A G A C G T
+C T C T A G C C A T C G C A T C T C T A G G G C A C A G C A T G T T T T T G A A
+T C T C T A G T C T A G C G C G G A G C T T G A C A T G A A T C T C T A G A T G
+T A A T A G A T T C T C T C T C T A G T C T C T A G T G T T C C G G T G T G T G
+C T G T T T C A A T C T C T A G A T G T G T G C T A T C C A C C A C G G C T T G
+G A C T C T C T A G G C C C A A A A C T C T C T C T A G T T C T C T A T C T C T
+A G C A A T C T C T T C T C T A G A T C T C T A G C G T G C C C A A A A C C T C
+T C T A G C A A G C C C A A A A C A G C C C T T C T C T A A T T A C G C C A C T
+C A A T T A C G C C C A T A T T A C G C C G T C T A T T A C A T T A C G C C A G
+A T T A C A T T A C G C C C T C T A T T A C G C C A C T A C T T T G A A T T A C
+G C C G A T T A C G C C A A T T A C G C C A G C T T G C G A T T A C G C C T C G
+A T T A C G C C C G C A T T G T A T T A C A T T A C G C C A A C A G T T A T A A
+C A A A A G T T A T A A T T A T A A G T T A A T G T T A T A A G T T T G C G T T
+A T A A T T T G C C G G C C A T T A C G C C C C A G T T A G T T A T A A A A G C
+A T T A C G C C C C A A T T A C G C C A A A A G T T A T A A T A G C C A T T A C
+G C C C T C G A C C G T T A T A A C C A A A A C C A T T A C G C C A A A T T A T
+T A C G C C C C G C T G T T A T A A C C C A T T A C G C C T A T A A A T A G T T
+A T A A C A C A A A G T T A T A A A T T G T G T T A T A A A C G G C A T C C A T
+A C T G G A T T A A T T A C G C C T A T A A T C C C C G G T T A A T T A C G C C
+T A G C A T T A C G C C C A G C C C G A A T A T T G T T A A T T A C G C C A G T
+T A T A A T G A T T A C G A T T A C G C C G C C T G A T G T T A T A A A T G T T
+T T C T G A T G G T T A T T A C G C C T A T T A C G C C A G T T A T T A C G C C
+T T C T A T T G C G C C G T T A T A A C G G G C T G T T A T A A A C T G A T G T
+G T T C T G A T G T G T T A T A A G G C A A T A A G A C A C G G T T G C G G T C
+C A G T T A C G C A G C T T G G T T A T A A G A A C T A A C A C T A C G T C T G
+A T G T G C T G A T G T T A T A A A T G G G G G C C C T G A T G T A T A G G T G
+C T G A T G T C C C G C T C T G A T G T A T C C C T G A T G T C T G A T G T T G
+T T A A T A C C A G T G T A A T T G A G A C G G G C C G C C G A G A A G G G A T
+T T A G A G T G C A C T A C C T G A T C T G A T G T G G C T G A T G T T G T A T
+G A A A C G T T G C T G A T G T C A T G C A A T T C T G A T G T C C T A A G T C
+T G A T G T G A A C T A A A G G A C T G A T G T G A A G A C T G T T G G G C G T
+G T A A C G G G C G A T T G A G A C T A C C G G G G G T C T C T G A T G T A T G
+G T A G C T C G C G C T G A T G T C C T G A T G T C G G C A T C T G G G A A A T
+C T G A T G T G C G G T C C C G G T T G A C T G T G C C T A T T C C A G A A A C
+G G G G C G T T C A C G A G C G G C T T A C A C T A A T T A G A G T T G T A A G
+G C T G G A C G T T C T C G T G T G C G T A A A C T A T A C C C A T A T T C C T
+T C T A G A G C A G G T C G A T A T T A C A T G T T G T A A A G G G G C A G T A
+C T G A A C G A T G T A T T T G T C T T A T T C T G C A C T G C A G C G G T T A
+T A T T C T G C A T G A G C T A A C T G G C A T T T T A A A A A G A T T C T T G
+G T T T T A T T C T G C A T T C T G C A A G T G A A T T T A T T C T G C A T C C
+C G C A A T G G C T A T T C T G C A A T T C T G C A C C T A G C G G T A G C G G
+G C A C T C A G C G A G A G G G C G T A T T C T G C A A T T C T G C A G G G T T
+A T C A C G A G G G A T G T G A A A T G G C C A C C A T C T A T T C T G C A T C
+T G C A A T A T T C T G C A G C C C A T T T A T A T T C T G C A A T A A G G G T
+T A T T T A T T C T G C A T T A G G G A C A T T G T G A C C T T C A C T A T T C
+T G C A A A C A A G A T T G T A T T C T G C A A C A T T G A C G G G A T T G G G
+A C T A T T C T G C A A A A T T T T T C A T G A T A T T C T G C A A G C T C C T
+T A C T C T G G T A T T C T G C A G C A G G G A G G G A G T C G T G A C T T A A
+A A A A G C T T C T A T T C T G C A T T C T G C A C A A C C A A A T A G C A A T
+C T T T A T T C T G C A T G C A A A T A T T C T G C A T T A C C A G T A T T C T
+G C A T G C A A T T C T G C A T T A T T C T G C A A T A G G T A G G G T T T T A
+A T G T G C A G T C T T T A G T A C C G T T G G C G G C A C T A C C T T C T C T
+C A T C G T T G G C T G A T G T A T G T C A T A T G A C A C C C G T C T G A G C
+A A A C A T G T G G T T G T G A A G G C G G C G G T A A T A A T T T A T G C T A
+A C C A C G A A A T G C G T A G A A C T A C T G G T A C C A A T G A G T G G A G
+C C C A C G A C T G G G C G G A C A G A G G A T A C T G C A G C C C G A G G T G
+A T G C C G G G G C A A A G C T G T C T A T C C C C C C T C A A C T G G A G C T
+T A C G C C C A A T G A A G C G G A C G G A A A G C T G C T T A G C C A T A C C
+G A T C G A A C C T G T T C A T A T C C T A A C C A G A A A G T T C G A C G T G
+A C A A A A C G T C G A A G A T C G C T C T A T T C C G A C T T C G G A G G T C
+G C T A T A A C A G G T C A A C C T T T T T T C A A C C T T T T T A C C C C C A
+A A C C T T T T T T C T T T T G C G G G C C C A A T G T G G C C C C T G T A T T
+A A C C T T T T T T G G T C A A C C T T T T T C G A A T C T T T C G A A C C T T
+T T T C A G A A C C C T T G T T A A T A A C C T T T T T G C T A C C C G C T G A
+C T C T C A A C C T T T T T T T T T A A C C T T T T T A A C C T T T T T G C A C
+C G A A A C C T T T T T A C C T T T T T C T A A C C T T T T T A A C C T T T T T
+G A A A A C C T T A A C C T T T T T T T T C G G T G A C G C C C A C G A A A C C
+T T T T T T A T A A A C C T T T T T T G A T C G T T T C G C C G T A A G A C T C
+T C T A A C C T T T T T G C A C G A T T C G A A G A A A C C T T T T T C T T A A
+C C T T T T T T T T T T C G C G T G G T G A G T C C T T C T G T A C A G A C C G
+T G A A A T C G C A A T T T C A A A C C T T T T T T G A G G A G G G T G T A A A
+C C T T T T T A C C T T T T T C T T A G C C A A T C T C G C C G T G C A C A G T
+A T A A C C T T T T T A T G A G T C G C G C A A T C G T C A A C C T T T T T T T
+A C T A C T G A T A C A A A C C T T C T G T T C C T C T T T C A G A G G C T T G
+T T G T A G G T A C T G T T C C T C C T C C G A C C T G T T C C T A A G T C C G
+A C A A G T C T G T T C C T C C C T G C T G T T C C T T C C T G A C A A G T C C
+G A C C T G T T C T G T T C C T G A C A A C T G T T C C T G T C C T G T T C C T
+G C T T T C C G A C A A G T C C C T G T T C C T T C C T G T C C G A C A A G T C
+T C C T G C T C C T G C T G T T C C T T C C G A C A A G T C C G A C A A G T C C
+T C C T G C T C C T T C C T A C A A G C T G T T C T C C T G C T G T C C G A T C
+C T G C T G C T T C T C C T G C T G A C A A G T C C G A C A T C C T G C T C C T
+G C T T T C C T A C A A C T G T T C C T C C T C T C C T C C T G C T C C T T C C
+T G C T T T C C T C T G T T C C T C T G T T C C T C T G T T C C T T C C T G C T
+T C C T G C T T C C T G C T T C C T G C T T C C T G C T T C C T G C T T C C T G
+T C T C C T G T C C T G C T G C T T C C T G C T T C C T G C T T C C T G T C C T
+G C T T C C T G C T T C C T G C T T C C T G C T G T T A G T A G T T A G T A G T
+T A G T A G T T A G T A G T T A G T A G T T A G T A G T T A G T A G T T A G T A
+G T T A G T A G T T A G T A G T T A G T A G T T A G T A G T T A G T A G T T A G
+T A G T T A G T A G T T A G T A G T T A G T A G T T A G T A G T T A G T A G T T
+A G T A G T T A G T A G T T A G T A G T T A G T A G T T A G T A G T T A G T A G
+T T A G T A G T T A G T A G T T A G T A G T T A G T A G T T A G T A G T T A G T
+A G T T A G T A G T T A G T A G T T A G T A G T T A G T A G T T A G T A G T T A
+G T A G T T A G T A
+    \end{Verbatim}
+
+    \hypertarget{section}{%
+\subsection{6}\label{section}}
+
+Buatlah fungsi feed-forward!
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{math}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} Fungsi aktivasi \PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{aktivasi}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{l+m+mi}{1}\PY{o}{/} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{+} \PY{n}{math}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{)}\PY{p}{)}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} }
+\PY{l+s+sd}{Mendapatkan nilai W di setiap list sesuai dengan index.}
+\PY{l+s+sd}{Mapping W menjadi satu dimensi}
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{WTi}\PY{p}{(}\PY{n}{W}\PY{p}{,} \PY{n}{i}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{map}\PY{p}{(} \PY{k}{lambda} \PY{n}{w}\PY{p}{:}\PY{n}{w}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{W}\PY{p}{)}\PY{p}{)}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} }
+\PY{l+s+sd}{Menampung WTi sesuai index dan membuat menjadi satu list}
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{WT}\PY{p}{(}\PY{n}{W}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n+nb}{list}\PY{p}{(} \PY{n+nb}{map}\PY{p}{(} \PY{k}{lambda} \PY{n}{i} \PY{p}{:} \PY{n}{WTi}\PY{p}{(}\PY{n}{W}\PY{p}{,} \PY{n}{i}\PY{p}{)}\PY{p}{,} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{W}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)} \PY{p}{)} \PY{p}{)}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} }
+\PY{l+s+sd}{Nilai yang masuk ke neuron di hidden layer adalah penjumlahan antara perkalian weight dengan}
+\PY{l+s+sd}{nilai yang masuk pada input neuron.}
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{XW}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{W}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n+nb}{map}\PY{p}{(} \PY{k}{lambda} \PY{n}{w}\PY{p}{:} \PY{n}{ft}\PY{o}{.}\PY{n}{reduce}\PY{p}{(} \PY{k}{lambda} \PY{n}{a}\PY{p}{,}\PY{n}{b}\PY{p}{:}\PY{n}{a}\PY{o}{+}\PY{n}{b}\PY{p}{,} \PY{n+nb}{map}\PY{p}{(} \PY{k}{lambda} \PY{n}{xx}\PY{p}{,}\PY{n}{vw}\PY{p}{:} \PY{n}{xx}\PY{o}{*}\PY{n}{vw}\PY{p}{,} \PY{n}{X}\PY{p}{,} \PY{n}{w}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,} \PY{n}{WT}\PY{p}{(}\PY{n}{W}\PY{p}{)} \PY{p}{)}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} Mengaktivasi nilai yang didapat pada XW \PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{input\PYZus{}to\PYZus{}hidden}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{W}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n+nb}{list}\PY{p}{(} \PY{n+nb}{map}\PY{p}{(} \PY{k}{lambda} \PY{n}{x}\PY{p}{:}\PY{n}{aktivasi}\PY{p}{(}\PY{n}{x}\PY{p}{)} \PY{p}{,} \PY{n}{XW}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{W}\PY{p}{)} \PY{p}{)} \PY{p}{)}
+
+\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{} membuat feed\PYZhy{}forward dari fungsi yang sudah dibuat di atas, supaya modular \PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{k}{def} \PY{n+nf}{feed\PYZus{}forward}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{W}\PY{p}{,} \PY{n}{M}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{input\PYZus{}to\PYZus{}hidden}\PY{p}{(}\PY{n}{input\PYZus{}to\PYZus{}hidden}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{W}\PY{p}{)}\PY{p}{,} \PY{n}{M}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X} \PY{o}{=} \PY{p}{[} \PY{l+m+mi}{9}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{4} \PY{p}{]}
+\PY{n}{W} \PY{o}{=} \PY{p}{[} \PY{p}{[} \PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mf}{0.4} \PY{p}{]} \PY{p}{,} \PY{p}{[} \PY{l+m+mf}{0.3}\PY{p}{,} \PY{l+m+mf}{0.7} \PY{p}{]} \PY{p}{,} \PY{p}{[} \PY{l+m+mf}{0.25}\PY{p}{,} \PY{l+m+mf}{0.9} \PY{p}{]} \PY{p}{]}
+\PY{n}{M} \PY{o}{=} \PY{p}{[} \PY{p}{[} \PY{l+m+mf}{0.34} \PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mf}{0.45}\PY{p}{]} \PY{p}{]}
+
+\PY{n}{feed\PYZus{}forward}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{W}\PY{p}{,} \PY{n}{M}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[0.6876336740661236]
+\end{Verbatim}
+\end{tcolorbox}
+        
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
